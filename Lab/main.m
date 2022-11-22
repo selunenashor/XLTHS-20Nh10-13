@@ -16,14 +16,36 @@ for i=1:3
 end
 max_rate_idx = find(abs(success-min(success))<0.0000001);
 idx = max_rate_idx(1);
-fprintf('Ma tran nham lan cua truong hop co do chinh xac tong hop cao nhat (%dHz):\n',N_FFT(idx));
 [r, co] = size(c{idx});
+max_cor = 1;
+for i=2:r
+    if(c{idx}(i,i)>c{idx}(max_cor,max_cor)) 
+        max_cor = i;
+    end
+end
+max_wrong = [1,2];
 for i = 1:r
     for j =1:co
-        fprintf('%d\t',c{idx}(i,j));
+        if(i~=j)
+            if(c{idx}(i,j)>c{idx}(max_wrong(1,1),max_wrong(1,2)))
+                max_wrong(1,1) = i;
+                max_wrong(1,2) = j;
+            end
+        end
+    end
+end
+fprintf('Ma tran nham lan cua truong hop co do chinh xac tong hop cao nhat (%dHz):\n',N_FFT(idx));
+for i = 1:r
+    for j =1:co
+        if(i==max_cor&j==max_cor)
+            cprintf('*green','%d\t',c{idx}(i,j));
+        elseif(i==max_wrong(1,1)&j==max_wrong(1,2))
+            cprintf('*red','%d\t',c{idx}(i,j));
+        else
+            fprintf('%d\t',c{idx}(i,j));
+        end
     end
     fprintf('\n');
 end
-
 
 
